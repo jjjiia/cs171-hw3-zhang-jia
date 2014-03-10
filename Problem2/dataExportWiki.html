@@ -39,7 +39,12 @@
 				$(value).find("td:lt(6)").each(function(){
 					var str = $.trim($(this).text())
 					str= str.replace(/\s{2,}/g, ' ');
-					row.push(str)
+					str= str.replace(/\,/g, '');
+					if(str!=""){
+						row.push(parseInt(str))
+					}else{
+						row.push(str)
+					}
 				}); // headers for year, and the 5 agencies only
 				//console.log(row)
 				table.push(row.join(","));
