@@ -21,15 +21,39 @@
             var root,allData, body, table;
             root = $("<div></div>")
             root.html(data.responseText)
-
+			var table = [];
             var content = root.find("#content"); // find all the nodes that have ID "content"
-            var h2s = content.find(".mw-headline"); // search in all "content" nodes for nodes of class ".mw-headline"
-
-            $.each(h2s, function(index, value) {
-                console.log($(value).text()); // print text
-            });
+			var tablehead = []
+			content.find(".wikitable th:lt(6)").each(function(){
+				var str = $.trim($(this).text())
+				str= str.replace(/\s{2,}/g, ' ');
+				tablehead.push(str)
+			}); // headers for year, and the 5 agencies only
+			//console.log(tablehead)
+			table.push(tablehead.join(","));
 			
-			saveToFile(["Hello World"],"test.txt")
+            var tablecontent = content.find(".wikitable tr:gt(10)");// content for rows => year 0
+			
+			$.each(tablecontent, function(index, value){
+				var row = []
+				$(value).find("td:lt(6)").each(function(){
+					var str = $.trim($(this).text())
+					str= str.replace(/\s{2,}/g, ' ');
+					row.push(str)
+				}); // headers for year, and the 5 agencies only
+				//console.log(row)
+				table.push(row.join(","));
+				
+				//$.trim($(value).find("td:lt(6)"))
+				//table.push($(value).find("td:lt(6)").text());			
+			})
+			
+			//console.log(table)
+            $.each(tablecontent, function(index, value) {
+             // console.log($(value).text()); // print text
+			 // console.log(index)
+            });
+			saveToFile(table,"test.txt")
         },
         error: function() {
             return console.log("error");
@@ -56,6 +80,7 @@
        blob = new Blob(blobText, {
          type: "text/plain;charset=utf-8"
        });
+	   //console.log(blobText)
        return saveAs(blob, fileName);
      };
 
