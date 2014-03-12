@@ -12,7 +12,7 @@
 
     width = 960 - margin.left - margin.right;
 
-    height = 300 - margin.bottom - margin.top;
+    height = 500 - margin.bottom - margin.top;
 
     bbVis = {
         x: 0 + 100,
