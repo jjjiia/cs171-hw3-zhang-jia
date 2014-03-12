@@ -4,10 +4,10 @@
     var bbVis, brush, createVis, dataSet, handle, height, margin, svg, svg2, width;
 
     margin = {
-        top: 50,
+        top: 0,
         right: 50,
         bottom: 50,
-        left: 150
+        left: 100
     };
 
     width = 960 - margin.left - margin.right;

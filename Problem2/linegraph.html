@@ -4,15 +4,16 @@
     <title></title>
     <script src="../libs/d3.v3.min.js"></script>
     <style>
-	body{font-family:helvetica; font-size:10px; color:#ddd;}
+	body{font-family:helvetica; font-size:10px; color:#666;}
+	#title{font-size:24px;margin:20px;letter-spacing:1px;}
         .axis path,
         .axis line {
             fill: none;
-            stroke: #ddd;}
+            stroke: #666;}
 
         .dataArea {
-            stroke: 1px #ddd;
-            fill:#ddd;
+            stroke: 1px #666;
+            fill:#666;
             fill-opacity:0.5;
             clip-path: url(#clip);
         }
@@ -24,6 +25,7 @@
 
 </head>
 <body>
+	<div id="title">World Population</div>
     <div id="vis"></div>
 
 
