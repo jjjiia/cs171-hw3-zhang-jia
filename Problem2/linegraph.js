@@ -62,7 +62,19 @@
 			var endvalue = null;
 			var startyear = null;
 			var endyear = null;
+			var hasValue = []
 			//console.log(data, column, columnData)
+			data.forEach(function(d,i){
+				console.log("first")
+				d.CurrentColumn = parseInt(d[column]);
+				
+				if(!isNaN(d.CurrentColumn)){
+					hasValue.push(i)
+				}
+			})
+			var firstValueIndex = d3.min(hasValue);
+			console.log(column, firstValueIndex);
+			
 			data.forEach(function(dataitem,i){
 				var d = {}
 				d.Year = parseInt(dataitem.Year);
@@ -78,8 +90,10 @@
 						startvalue = d.CurrentColumn
 						startyear = d.Year
 					}else{
-						range = {start:i}						
-						interpolated.push(range, startvalue)
+						if(i>=firstValueIndex){
+						range = {start:i}
+					}
+						//interpolated.push(range, startvalue)
 						//console.log("pushed " + d.Year +" "+ startvalue)
 					}
 				}
@@ -173,9 +187,8 @@
 		  drawLine(socialAffairsData, socialAffairsLine, "SocialAffairs")
 		  drawLine(hydeData, hydeLine, "Hyde")
 		  drawLine(maddisonData, maddisonLine, "Maddison")
-
 		  function drawDots(dataClass, data){
-			  svg.selectAll("."+dataClass)
+			  svg.selectAll("."+dataClass +" .Inter")
 			  .data(data)
 			  .enter()
 			  .append("circle")
@@ -185,9 +198,10 @@
  		 			}else{
  		 				return dataClass;
  		 			}}))
-   			 .attr("cx", (function(d,i) { return x(d.Year);}))
+   			 .attr("cx", (function(d,i) { console.log(d.Year); return x(d.Year);}))
    		  	 .attr("cy",(function(d) { return y(d.CurrentColumn);}))
    			 .attr("r",2);
+			 console.log(data[0])
 		  }
 
 		  drawDots("Census", censusData)
