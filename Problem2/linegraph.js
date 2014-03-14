@@ -157,7 +157,7 @@
 		//x.domain(d3.extent(data, function(d) { return d.Year; }));
 		x.domain([0, 2050])
 		///y.domain([0, d3.max(data, function(d) { return d.Census; })]);
-		y.domain([0, 10000000000])
+		y.domain([0, 9500000000])
 		
 	  svg.append("g")
 	      .attr("class", "x axis")
