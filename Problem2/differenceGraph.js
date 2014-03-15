@@ -53,7 +53,7 @@
 		var hydeLine = null
 		var socialAffairsLine = null
 		var censusLine = null
-		
+		var averageLine = null
 		function interpolate(data, column, columnData){
 			var interpolated = []
 			var range = null;
@@ -170,21 +170,93 @@
 	      .attr("y", 6)
 	      .attr("dy", ".71em")
 	      .style("text-anchor", "end");
+		  
+		function CalculateDeviation(){
+			function firstLastYear(columnName){
+				var hasValue =[]
+				data.forEach(function(d,i){
+					if(!isNaN(parseInt(d[columnName]))){
+						hasValue.push(parseInt(d.Year))
+					}
+				})
+				return [d3.min(hasValue), d3.max(hasValue)]
+			}
+
+			function mapDataByYear(dataList) {
+				var output = {}
+				for(var i in dataList) {
+					output[dataList[i].Year] = dataList[i]
+				}
+				return output
+			}
+
+			var mappedCensusData = mapDataByYear(censusData)
+			var mappedPopRefData = mapDataByYear(popRefData)
+			var mappedMaddisonData = mapDataByYear(maddisonData)
+			var mappedSocialAffairsData = mapDataByYear(socialAffairsData)
+			var mappedhydeData = mapDataByYear(hydeData)
+
+  		 var censusDataFirstLast = firstLastYear("United States Census Bureau (2009) [4 ]")
+		 var popRefFirstLast = firstLastYear("Population Reference Bureau")
+		 var maddisonFirstLast = firstLastYear("Maddison (2003) [8 ]")
+		 var socialAffairsFirstLast = firstLastYear("United Nations Department of Economic and Social Affairs (2008) [6 ]")
+		 var hydeFirstLast = firstLastYear("HYDE (2006) [7 ]")
+		 		  //console.log(popRefData)
+				  var average = []
+			data.forEach(function(d,i){
+				var sum = 0
+				var count = 0
+				var year = d.Year
+				
+				function calculateAverage(mappedDataset){
+					if(mappedDataset[year] == undefined ){
+						if (d.Year < popRefFirstLast[0]){
+							count++
+							sum +=0
+						} else if (d.Year > popRefFirstLast[1]){
+							count++
+							sum += mappedDataset[popRefFirstLast[1]].CurrentColumn
+						}
+					} else {
+						count++
+						sum+= mappedDataset[year].CurrentColumn
+					}		
+								
+				}
+				calculateAverage(mappedCensusData)
+				calculateAverage(mappedPopRefData)
+				calculateAverage(mappedMaddisonData)
+				calculateAverage(mappedSocialAffairsData)
+				calculateAverage(mappedhydeData)
+				var mean = sum/count
+				average.push([year, mean])
+			
+				//console.log(year, mean)
+			})
+			return average			
+		}
+		var average = CalculateDeviation();
+		console.log(average)
 	
+		var averageLine = d3.svg.line()
+			.x(function(d,i){return x(d[0]);})
+			.y(function(d){return y(d[1])})
+			
 		  function drawLine(data, line, dataClass){
 	  	  	svg.append("path")
 	  	 		  .datum(data)
 	  		      .attr("class", dataClass + " line")
 	  		      .attr("d", line)
 	  		  	  .attr("stroke-width", 1)
-	  		  	  .attr("opacity", 1);
+	  		  	  .attr("opacity", .5);
 		  }
 		  
-		  drawLine(popRefData, popRefLine, "PopRef")
-		  drawLine(censusData, censusLine, "Census")
-		  drawLine(socialAffairsData, socialAffairsLine, "SocialAffairs")
-		  drawLine(hydeData, hydeLine, "Hyde")
-		  drawLine(maddisonData, maddisonLine, "Maddison")
+		  drawLine(popRefData, popRefLine, "notAverage")
+		  drawLine(censusData, censusLine, "notAverage")
+		  drawLine(socialAffairsData, socialAffairsLine,"notAverage")
+		  drawLine(hydeData, hydeLine, "notAverage")
+		  drawLine(maddisonData, maddisonLine,"notAverage")
+		  
 		  function drawDots(dataClass, data){
 			  svg.selectAll("."+dataClass +" .Inter")
 			  .data(data)
@@ -196,7 +268,7 @@
  		 			}else{
  		 				return dataClass;
  		 			}}))
-   			 .attr("cx", (function(d,i) { console.log(d.Year); return x(d.Year);}))
+   			 .attr("cx", (function(d,i) {return x(d.Year);}))
    		  	 .attr("cy",(function(d) { return y(d.CurrentColumn);}))
    			 .attr("r",2)
 			 .on("mouseover", function(d){
@@ -219,30 +291,7 @@
 		  drawDots("PopRef", popRefData)
 		  drawDots("Hyde", hydeData)
 		  drawDots("Maddison", maddisonData)
+		  drawLine(average, averageLine, "Average")
 
-        return createVis();
+      
     });
-
-    createVis = function() {
-        var xAxis, xScale, yAxis,  yScale;
-
-          xScale = d3.scale.linear().domain([0,100]).range([0, bbVis.w]);  // define the right domain generically
-
-		  // example that translates to the bottom left of our vis space:
-		  var visFrame = svg.append("g").attr({
-		      "transform": "translate(" + bbVis.x + "," + (bbVis.y + bbVis.h) + ")",
-		  	  //....
-			  
-		  });
-		  
-		  visFrame.append("rect");
-		  //....
-		  
-//        yScale = .. // define the right y domain and range -- use bbVis
-
-//        xAxis = ..
-//        yAxis = ..
-//        // add y axis to svg !
-
-
-    };
