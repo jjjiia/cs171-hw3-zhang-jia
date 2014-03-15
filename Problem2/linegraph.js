@@ -111,7 +111,7 @@
 								inter: true
 							})
 							//console.log("pushed interpolated "+ tempYear)
-						}
+						}time
 						columnData.push({
 							Year: d.Year,
 							CurrentColumn: d.CurrentColumn,
